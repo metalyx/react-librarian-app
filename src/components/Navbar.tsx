@@ -13,11 +13,13 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const loginOut = () => {
-        dispatch(logOut);
+        window.localStorage.removeItem('token');
+        dispatch(logOut());
         navigate('/login');
     };
 
     useEffect(() => {
+        console.log('isLoggedIn', isLoggedIn);
         if (!isLoggedIn) {
             return navigate('/login');
         }
@@ -52,7 +54,7 @@ const Navbar = () => {
                             >
                                 <Link to='/profile'>Profile</Link>
                             </li>
-                            {user?.isAdmin && (
+                            {user?.roles.indexOf('ADMIN') && (
                                 <li
                                     className={`${liStyles} ${
                                         location.pathname === '/admin' &&
