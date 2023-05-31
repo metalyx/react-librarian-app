@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Layout from './components/Layout';
 import Home from './components/Home';
 import Books from './components/Books';
-import Admin from './components/Admin';
+import Admin from './components/admin/Admin';
 import Profile from './components/Profile';
 import { useAppDispatch } from './hooks/redux';
 import { userSlice } from './store/reducers/UserSlice';

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../hooks/redux';
-import { getUsersInfo } from '../helpers/getUsersInfo';
-import AllUsers from './admin/AllUsers';
-import { iUser } from '../models/iUser';
+import { useAppSelector } from '../../hooks/redux';
+import { getUsersInfo } from '../../helpers/getUsersInfo';
+import AllUsers from './AllUsers';
+import { iUser } from '../../models/iUser';
+import { Link } from 'react-router-dom';
 
 const Admin = () => {
     const userInfo = useAppSelector((state) => state.userReducer.user);
@@ -24,16 +25,23 @@ const Admin = () => {
             const allUsers = await getUsersInfo();
             setUsers(allUsers);
         }
-
-        setAdminView(<AllUsers users={users} />);
     };
+
+    useEffect(() => {
+        setAdminView(<AllUsers users={users} />);
+    }, [users]);
 
     return (
         <div>
-            <h1>Admin menu</h1>
+            <h1 className='my-3'>Admin menu</h1>
             {!userInfo && <div>Checking permissions...</div>}
             {isPermissionDenied && (
-                <div className='text-red-600'>Permission denied.</div>
+                <div>
+                    <div className='text-red-600'>Permission denied.</div>
+                    <div>
+                        Go back <Link to='/'>Home</Link>
+                    </div>
+                </div>
             )}
             {!isPermissionDenied && (
                 <div>
@@ -41,11 +49,11 @@ const Admin = () => {
                         <button onClick={handleShowUsers}>
                             Show All Users
                         </button>
+                        {/* <button>Button</button>
                         <button>Button</button>
                         <button>Button</button>
                         <button>Button</button>
-                        <button>Button</button>
-                        <button>Button</button>
+                        <button>Button</button> */}
                     </div>
                     <div>{adminView}</div>
                 </div>

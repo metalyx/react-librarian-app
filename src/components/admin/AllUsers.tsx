@@ -8,9 +8,15 @@ interface iAllUsers {
 const AllUsers: React.FC<iAllUsers> = ({ users }) => {
     return (
         <div>
-            <ul>
+            <ul className='my-4'>
                 {users.map((user) => (
-                    <li key={user.username}>
+                    <li
+                        key={user.username}
+                        className='border-solid p-2 border border-black-600'
+                    >
+                        <div>
+                            ID: <span>{user._id}</span>
+                        </div>
                         <div>
                             Username: <span>{user.username}</span>
                         </div>

@@ -3,7 +3,7 @@ import { userSlice } from '../store/reducers/UserSlice';
 import { useAppDispatch } from '../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BASE_URL } from './constants/BASE_URL';
+import { BASE_URL } from '../constants/BASE_URL';
 import { setToken } from '../utils/Axios';
 
 interface iErrors {
