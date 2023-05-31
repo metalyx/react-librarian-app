@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { userSlice } from '../store/reducers/UserSlice';
+import { getUserInfo } from '../helpers/getUserInfo';
 const liStyles = `font-semibold text-lg cursor-pointer hover:opacity-[0.5]`;
 
 const Navbar = () => {
     const { user, isLoggedIn } = useAppSelector((state) => state.userReducer);
-    const { logOut } = userSlice.actions;
+    const { logOut, setUser } = userSlice.actions;
     const dispatch = useAppDispatch();
 
     const location = useLocation();
@@ -19,11 +20,13 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        console.log('isLoggedIn', isLoggedIn);
-        if (!isLoggedIn) {
-            return navigate('/login');
-        }
-    }, [isLoggedIn]);
+        (async () => {
+            if (!user) {
+                const userInfo = await getUserInfo();
+                dispatch(setUser(userInfo));
+            }
+        })();
+    }, []);
 
     return (
         <>
@@ -54,7 +57,7 @@ const Navbar = () => {
                             >
                                 <Link to='/profile'>Profile</Link>
                             </li>
-                            {user?.roles.indexOf('ADMIN') && (
+                            {user?.roles.find((role) => role === 'ADMIN') && (
                                 <li
                                     className={`${liStyles} ${
                                         location.pathname === '/admin' &&

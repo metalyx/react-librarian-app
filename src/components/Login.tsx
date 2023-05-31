@@ -3,7 +3,12 @@ import { Navigate, redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 import LoginForm from './LoginForm';
 
-const Login = () => {
+interface iLogin {
+    registration?: boolean;
+    successReg?: boolean;
+}
+
+const Login: React.FC<iLogin> = ({ registration, successReg }) => {
     const { isLoggedIn } = useAppSelector((state) => state.userReducer);
 
     useEffect(() => {
@@ -16,10 +21,16 @@ const Login = () => {
         <>
             {!isLoggedIn && (
                 <div>
-                    {/* <button onClick={mockAdminLogin}>Login as Admin</button>
-                    <button onClick={mockUserLogin}>Login as User</button> */}
-                    <h1 className='text-center'>Library login</h1>
-                    <LoginForm />
+                    {!registration && (
+                        <h1 className='text-center'>Library login</h1>
+                    )}
+                    {registration && (
+                        <h1 className='text-center'>Registration</h1>
+                    )}
+                    <LoginForm
+                        registration={registration}
+                        successReg={successReg}
+                    />
                 </div>
             )}
             {isLoggedIn && (

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import Axios from '../utils/Axios';
 import { userSlice } from '../store/reducers/UserSlice';
 import { useAppDispatch } from '../hooks/redux';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { BASE_URL } from './constants/BASE_URL';
+import { setToken } from '../utils/Axios';
 
 interface iErrors {
     login: string;
@@ -9,7 +12,12 @@ interface iErrors {
     invalidCredentials: string;
 }
 
-const LoginForm = () => {
+interface iLoginForm {
+    registration?: boolean;
+    successReg?: boolean;
+}
+
+const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<iErrors>({
@@ -19,18 +27,18 @@ const LoginForm = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
 
-    const { logIn } = userSlice.actions;
+    const { logIn, setUser } = userSlice.actions;
     const dispatch = useAppDispatch();
 
-    const signIn = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const navigate = useNavigate();
 
+    const isValidForm = (): boolean => {
         if (login.trim().length <= 0) {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
                 login: 'Login cannot be empty',
             }));
-            return;
+            return false;
         } else {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
@@ -43,12 +51,22 @@ const LoginForm = () => {
                 ...prevState,
                 password: 'Password cannot be less than 4 characters',
             }));
-            return;
+            return false;
         } else {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
                 password: '',
             }));
+        }
+
+        return true;
+    };
+
+    const signIn = async () => {
+        const isValid = isValidForm();
+
+        if (!isValid) {
+            return;
         }
 
         if (errors.login.length > 0 || errors.password.length > 0) {
@@ -60,9 +78,51 @@ const LoginForm = () => {
         }
     };
 
+    const handleRegister = async () => {
+        const isValid = isValidForm();
+
+        if (!isValid) {
+            return;
+        }
+
+        if (errors.login.length > 0 || errors.password.length > 0) {
+            return;
+        } else {
+            setIsLoading(true);
+            await serverRegistration();
+            setIsLoading(false);
+        }
+    };
+
+    const serverRegistration = async () => {
+        try {
+            const response = await axios.post(
+                `${BASE_URL}api/auth/registration`,
+                {
+                    username: login,
+                    password,
+                }
+            );
+
+            if (response.status >= 200 && response.status <= 299) {
+                setErrors({
+                    invalidCredentials: '',
+                    login: '',
+                    password: '',
+                });
+                return navigate('/registrationSuccess');
+            }
+        } catch (e: any) {
+            setErrors({
+                ...errors,
+                invalidCredentials: e.response.data.message,
+            });
+        }
+    };
+
     const serverLogin = async () => {
         try {
-            const response = await Axios.post('/api/auth/login', {
+            const response = await axios.post(`${BASE_URL}api/auth/login`, {
                 username: login,
                 password,
             });
@@ -85,25 +145,41 @@ const LoginForm = () => {
                 });
 
                 const token = response.data.token;
-
+                setToken(token);
                 window.localStorage.setItem('token', token);
-                console.log('SUCESS');
+
                 dispatch(logIn());
             }
         } catch (e: any) {
-            console.log(e);
             setErrors({
                 ...errors,
-                invalidCredentials: e.response.data.message,
+                invalidCredentials: e.response?.data?.message,
             });
         }
+    };
+
+    const handleNeedAccount = () => {
+        return navigate('/registration');
+    };
+
+    const handleBackToLogin = () => {
+        return navigate('/login');
     };
 
     return (
         <div>
             {isLoading && <div>Loading...</div>}
-            <form onSubmit={signIn}>
-                <div className='flex gap-4 my-8 justify-center'>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                }}
+            >
+                {successReg && (
+                    <div className='text-white p-2 bg-green-600 mt-4'>
+                        Successful registration
+                    </div>
+                )}
+                <div className='flex gap-4 my-6 justify-center'>
                     <div className='flex flex-col gap-2 justify-center'>
                         <label htmlFor='loginField'>Login</label>
                         <label htmlFor='passwordField'>Password</label>
@@ -149,24 +225,54 @@ const LoginForm = () => {
                             {errors.invalidCredentials}
                         </span>
                     )}
-                    <button
-                        type='submit'
-                        className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                            isLoading ? 'opacity-[0.5]' : ''
-                        }`}
-                        disabled={isLoading}
-                    >
-                        Sign In
-                    </button>
-                    <button
-                        type='button'
-                        className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                            isLoading ? 'opacity-[0.5]' : ''
-                        }`}
-                        disabled={isLoading}
-                    >
-                        Don't have an account?
-                    </button>
+                    {!registration && (
+                        <button
+                            type='button'
+                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
+                                isLoading ? 'opacity-[0.5]' : ''
+                            }`}
+                            disabled={isLoading}
+                            onClick={signIn}
+                        >
+                            Sign In
+                        </button>
+                    )}
+                    {!registration && (
+                        <button
+                            type='button'
+                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
+                                isLoading ? 'opacity-[0.5]' : ''
+                            }`}
+                            disabled={isLoading}
+                            onClick={handleNeedAccount}
+                        >
+                            Don't have an account?
+                        </button>
+                    )}
+                    {registration && (
+                        <button
+                            type='button'
+                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
+                                isLoading ? 'opacity-[0.5]' : ''
+                            }`}
+                            disabled={isLoading}
+                            onClick={handleRegister}
+                        >
+                            Register
+                        </button>
+                    )}
+                    {registration && (
+                        <button
+                            type='button'
+                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
+                                isLoading ? 'opacity-[0.5]' : ''
+                            }`}
+                            disabled={isLoading}
+                            onClick={handleBackToLogin}
+                        >
+                            Already have an account?
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
