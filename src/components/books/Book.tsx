@@ -7,23 +7,28 @@ interface iBookComponent {
 
 const Book: React.FC<iBookComponent> = ({ book }) => {
     return (
-        <div className='h-[250px] w-[100%]'>
-            <div className='max-h-full p-2 rounded border border-solid border-blue-500 overflow-hidden flex'>
-                <div className=' w-[50%]'>
+        <div className='sm:w-full lg:w-[400px] xl:w-[270px] '>
+            <div className='h-full max-h-full p-2 rounded border border-solid border-blue-500 overflow-hidden flex'>
+                <div className='w-[50%]'>
                     <img
                         className='object-cover max-h-[100%]'
                         src={book.cover}
                         alt='book cover'
                     />
                 </div>
-                <div className='w-[50%]'>
+                <div className='w-[45%] ml-[5%]'>
                     <p className='text-xl'>
                         {book.title} ({book.year})
                     </p>
-                    <p>Authors: {book.authors}</p>
-                    <p>{book.description}</p>
                     <p>
-                        Available at library:{' '}
+                        <b>Authors: </b> {book.authors}
+                    </p>
+                    <p>
+                        <b>Description: </b>
+                        {book.description}
+                    </p>
+                    <p>
+                        <b>Available at library: </b>
                         {book.isAvailable ? (
                             <span className='text-green-600'>yes</span>
                         ) : (

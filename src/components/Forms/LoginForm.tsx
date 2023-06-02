@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { userSlice } from '../store/reducers/UserSlice';
-import { useAppDispatch } from '../hooks/redux';
+import React, { useEffect, useState } from 'react';
+import { userSlice } from '../../store/reducers/UserSlice';
+import { useAppDispatch } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BASE_URL } from '../constants/BASE_URL';
-import { setToken } from '../utils/Axios';
+import { BASE_URL } from '../../constants/BASE_URL';
+import { setToken } from '../../utils/Axios';
+import Input from '../input/Input';
+import Button from '../Buttons/Button';
+import ErrorSpan from '../error-span/ErrorSpan';
 
 interface iErrors {
     login: string;
@@ -27,18 +30,19 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
     });
     const [isLoading, setIsLoading] = useState(false);
 
-    const { logIn, setUser } = userSlice.actions;
+    const { logIn } = userSlice.actions;
     const dispatch = useAppDispatch();
 
     const navigate = useNavigate();
 
     const isValidForm = (): boolean => {
+        let errorCounter = 0;
         if (login.trim().length <= 0) {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
                 login: 'Login cannot be empty',
             }));
-            return false;
+            errorCounter += 1;
         } else {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
@@ -51,7 +55,7 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
                 ...prevState,
                 password: 'Password cannot be less than 4 characters',
             }));
-            return false;
+            errorCounter += 1;
         } else {
             setErrors((prevState: iErrors) => ({
                 ...prevState,
@@ -59,7 +63,11 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
             }));
         }
 
-        return true;
+        if (errorCounter > 0) {
+            return false;
+        } else {
+            return true;
+        }
     };
 
     const signIn = async () => {
@@ -139,10 +147,7 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
                         'Server error, please try again later...',
                 });
             } else {
-                setErrors({
-                    ...errors,
-                    invalidCredentials: '',
-                });
+                unsetErrors();
 
                 const token = response.data.token;
                 setToken(token);
@@ -166,6 +171,18 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
         return navigate('/login');
     };
 
+    const unsetErrors = () => {
+        setErrors({
+            invalidCredentials: '',
+            login: '',
+            password: '',
+        });
+    };
+
+    useEffect(() => {
+        unsetErrors();
+    }, [registration, successReg]);
+
     return (
         <div>
             {isLoading && <div>Loading...</div>}
@@ -185,93 +202,69 @@ const LoginForm: React.FC<iLoginForm> = ({ registration, successReg }) => {
                         <label htmlFor='passwordField'>Password</label>
                     </div>
                     <div className='flex flex-col gap-2'>
-                        <input
+                        <Input
                             id='loginField'
                             type='text'
                             value={login}
-                            onChange={(e) => setLogin(e.target.value)}
-                            className={`bg-slate-300 rounded p-1 font-bold ${
-                                errors.login.length > 0
-                                    ? 'border-solid border-2 border-red-600'
-                                    : ''
-                            }`}
+                            onChange={setLogin}
+                            isValid={errors.login.length === 0}
                         />
-                        <input
+
+                        <Input
                             id='passwordField'
                             type='password'
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={`bg-slate-300 rounded p-1 font-bold ${
-                                errors.password.length > 0
-                                    ? 'border-solid border-2 border-red-600'
-                                    : ''
-                            }`}
+                            onChange={setPassword}
+                            isValid={errors.password.length === 0}
                         />
                     </div>
                 </div>
                 <div className='flex flex-col gap-3'>
-                    {errors.login && (
-                        <span className='font-bold text-red-600'>
-                            {errors.login}
-                        </span>
-                    )}
-                    {errors.password && (
-                        <span className='font-bold text-red-600'>
-                            {errors.password}
-                        </span>
-                    )}
-                    {errors.invalidCredentials && (
-                        <span className='font-bold text-red-600'>
-                            {errors.invalidCredentials}
-                        </span>
-                    )}
+                    <ErrorSpan isVisible={!!errors.login}>
+                        {errors.login}
+                    </ErrorSpan>
+                    <ErrorSpan isVisible={!!errors.password}>
+                        {errors.password}
+                    </ErrorSpan>
+                    <ErrorSpan isVisible={!!errors.invalidCredentials}>
+                        {errors.invalidCredentials}
+                    </ErrorSpan>
                     {!registration && (
-                        <button
-                            type='button'
-                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                                isLoading ? 'opacity-[0.5]' : ''
-                            }`}
-                            disabled={isLoading}
-                            onClick={signIn}
-                        >
-                            Sign In
-                        </button>
+                        <>
+                            <Button
+                                type='button'
+                                disabled={isLoading}
+                                onClick={signIn}
+                            >
+                                Sign In
+                            </Button>
+                            <Button
+                                type='button'
+                                disabled={isLoading}
+                                onClick={handleNeedAccount}
+                            >
+                                Don't have an account?
+                            </Button>
+                        </>
                     )}
-                    {!registration && (
-                        <button
-                            type='button'
-                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                                isLoading ? 'opacity-[0.5]' : ''
-                            }`}
-                            disabled={isLoading}
-                            onClick={handleNeedAccount}
-                        >
-                            Don't have an account?
-                        </button>
-                    )}
+
                     {registration && (
-                        <button
-                            type='button'
-                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                                isLoading ? 'opacity-[0.5]' : ''
-                            }`}
-                            disabled={isLoading}
-                            onClick={handleRegister}
-                        >
-                            Register
-                        </button>
-                    )}
-                    {registration && (
-                        <button
-                            type='button'
-                            className={`border-dashed border-2 border-indigo-600 hover:border-solid ${
-                                isLoading ? 'opacity-[0.5]' : ''
-                            }`}
-                            disabled={isLoading}
-                            onClick={handleBackToLogin}
-                        >
-                            Already have an account?
-                        </button>
+                        <>
+                            <Button
+                                type='button'
+                                disabled={isLoading}
+                                onClick={handleRegister}
+                            >
+                                Register
+                            </Button>
+                            <Button
+                                type='button'
+                                disabled={isLoading}
+                                onClick={handleBackToLogin}
+                            >
+                                Already have an account?
+                            </Button>
+                        </>
                     )}
                 </div>
             </form>

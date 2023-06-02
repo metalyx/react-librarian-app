@@ -7,8 +7,8 @@ interface iPage {
 
 const Page: React.FC<iPage> = ({ title = 'Page', children }) => {
     return (
-        <div className='mt-10'>
-            <div>
+        <div className='px-24'>
+            <div className='border-b-2 border-solid border-blue-500'>
                 <h1>{title}</h1>
             </div>
             <div>{children}</div>

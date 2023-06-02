@@ -4,7 +4,6 @@ import { Axios } from '../utils/Axios';
 export async function getUserInfo(): Promise<iUser | never> {
     try {
         const userInfo = await Axios.get('/api/auth/getUserInfo');
-        console.log(userInfo.data);
         return userInfo.data;
     } catch (e) {
         console.error(e);

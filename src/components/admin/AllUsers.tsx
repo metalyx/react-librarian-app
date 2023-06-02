@@ -24,7 +24,21 @@ const AllUsers: React.FC<iAllUsers> = ({ users }) => {
                             Roles: <span>{user.roles}</span>
                         </div>
                         <div>
-                            Booked: <span>[{user.booked ?? ''}]</span>
+                            Booked:{' '}
+                            {user.bookings.map((booking) => (
+                                <div>
+                                    <b>Date of booking: </b>
+                                    <span>{booking.date}</span>
+                                    <b>Book title: </b>
+                                    <span>{booking.book.title}</span>
+                                    <b>Booking status: </b>
+                                    <span>
+                                        {booking.isActive
+                                            ? 'Active'
+                                            : 'Archived'}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
                     </li>
                 ))}

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
-import Login from './components/Login';
+import Login from './components/Forms/Login';
 import Layout from './components/Layout';
 import Home from './components/Home';
-import Books from './components/Books';
+import Books from './components/books/Books';
 import Admin from './components/admin/Admin';
 import Profile from './components/Profile';
 import { useAppDispatch } from './hooks/redux';
@@ -12,6 +12,7 @@ import { userSlice } from './store/reducers/UserSlice';
 import { getUserIdFromToken } from './helpers/getUserIdFromToken';
 import { getUserInfo } from './helpers/getUserInfo';
 import { setToken } from './utils/Axios';
+import Bookings from './components/bookings/Bookings';
 
 const App = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -78,6 +79,10 @@ const App = () => {
                         <Route
                             path='/admin'
                             element={<Admin />}
+                        />
+                        <Route
+                            path='/bookings'
+                            element={<Bookings />}
                         />
                     </Routes>
                 </Layout>

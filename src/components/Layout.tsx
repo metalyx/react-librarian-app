@@ -8,7 +8,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     return (
         <div>
             {isLoggedIn && <Navbar />}
-            {children}
+            <div className='relative top-[50px]'>{children}</div>
         </div>
     );
 };

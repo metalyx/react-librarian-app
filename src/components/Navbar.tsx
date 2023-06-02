@@ -57,15 +57,37 @@ const Navbar = () => {
                             >
                                 <Link to='/profile'>Profile</Link>
                             </li>
-                            {user?.roles.find((role) => role === 'ADMIN') && (
+                            {user?.roles.find(
+                                (role) => role === 'LIBRARIAN'
+                            ) && (
                                 <li
                                     className={`${liStyles} ${
-                                        location.pathname === '/admin' &&
+                                        location.pathname === '/bookings' &&
                                         '!font-bold'
                                     }`}
                                 >
-                                    <Link to='/admin'>Admin</Link>
+                                    <Link to='/bookings'>Bookings</Link>
                                 </li>
+                            )}
+                            {user?.roles.find((role) => role === 'ADMIN') && (
+                                <>
+                                    <li
+                                        className={`${liStyles} ${
+                                            location.pathname === '/admin' &&
+                                            '!font-bold'
+                                        }`}
+                                    >
+                                        <Link to='/admin'>Admin</Link>
+                                    </li>
+                                    <li
+                                        className={`${liStyles} ${
+                                            location.pathname === '/bookings' &&
+                                            '!font-bold'
+                                        }`}
+                                    >
+                                        <Link to='/bookings'>Bookings</Link>
+                                    </li>
+                                </>
                             )}
                         </ul>
                         <button
