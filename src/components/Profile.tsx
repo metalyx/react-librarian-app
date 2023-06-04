@@ -1,12 +1,12 @@
 import React from 'react';
 import { useAppSelector } from '../hooks/redux';
+import Page from './Page';
 
 const Profile = () => {
     const user = useAppSelector((state) => state.userReducer.user);
 
     return (
-        <div>
-            <h1>Profile</h1>
+        <Page title='Profile'>
             {user && (
                 <ul>
                     <li>
@@ -18,7 +18,7 @@ const Profile = () => {
                 </ul>
             )}
             {!user && <div>Loading user details...</div>}
-        </div>
+        </Page>
     );
 };
 

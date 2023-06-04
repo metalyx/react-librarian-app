@@ -11,7 +11,7 @@ const Page: React.FC<iPage> = ({ title = 'Page', children }) => {
             <div className='border-b-2 border-solid border-blue-500'>
                 <h1>{title}</h1>
             </div>
-            <div>{children}</div>
+            <div className='my-5'>{children}</div>
         </div>
     );
 };

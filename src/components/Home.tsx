@@ -1,9 +1,9 @@
 import React from 'react';
+import Page from './Page';
 
 const Home = () => {
     return (
-        <div>
-            <h1>My Library</h1>
+        <Page title='My Library'>
             <p>Information about library</p>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
@@ -40,7 +40,7 @@ const Home = () => {
                 mollis. Orci varius natoque penatibus et magnis dis parturient
                 montes, nascetur ridiculus mus.
             </p>
-        </div>
+        </Page>
     );
 };
 
