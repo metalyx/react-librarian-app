@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Page from '../Page';
 import { getAllBooks } from '../../helpers/getAllBooks';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';

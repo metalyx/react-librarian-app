@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Page from '../Page';
 
 const Bookings = () => {
@@ -12,7 +12,7 @@ const Bookings = () => {
         <Page title='Bookings'>
             <div>
                 <button>Create new booking</button>
-                <button>Cancell booking</button>
+                <button>Cancel booking</button>
             </div>
             <div></div>
         </Page>
