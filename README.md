@@ -1,6 +1,6 @@
 # Library App
 
-This is a library Full Stack application, this repository content is a Frontend part. Provides minimal functionality for a typical local library. The functionality will include booking books, storing books, creating users, using various roles, authorization, etc.
+This is a part of library Full Stack application, this repository contents a Frontend part. Provides minimal functionality for a typical local library. The functionality will include booking books, storing books, creating users, using various roles, authorization, etc.
 
 <i>You can find a backend part using the link: https://github.com/metalyx/express-librarian-app</i>
 
