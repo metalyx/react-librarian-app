@@ -2,7 +2,16 @@
 
 This is a part of library Full Stack application, this repository contents a Frontend part. Provides minimal functionality for a typical local library. The functionality will include booking books, storing books, creating users, using various roles, authorization, etc.
 
-<i>You can find a backend part using the link: https://github.com/metalyx/express-librarian-app</i>
+<i>You can find a backend part using the link: https://github.com/metalyx/express-librarian-app</i><br>
+<i>You can find a deployed demo using the link: https://react-librarian.herokuapp.com/</i>
+
+### USAGE
+1. Go to heroku demo link.
+2. User credentials below to log in as corresponding user. <br>
+2.1 Admin: `admin` `admin` <br>
+2.2 User: `user` `user` <br>
+2.3 Librarian: `librarian` `librarian` <br>
+3. Press logout in the navbar to logout.
 
 ### TOOLS USED
 
